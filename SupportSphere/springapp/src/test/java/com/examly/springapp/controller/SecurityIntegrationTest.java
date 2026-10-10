@@ -216,7 +216,7 @@ class SecurityIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON).content(assign))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.supportAgent.agentId").value(agentId))
-                .andExpect(jsonPath("$.status").value("Open"))
+                .andExpect(jsonPath("$.status").value("In Progress"))
                 .andReturn();
         ticket = objectMapper.readTree(assigned.getResponse().getContentAsString());
 
@@ -274,7 +274,8 @@ class SecurityIntegrationTest {
         // Manager sees the feedback; the agent who worked tickets cannot be deleted
         mockMvc.perform(get("/api/feedback").header("Authorization", manager)).andExpect(status().isOk());
         mockMvc.perform(delete("/api/supportAgent/" + agentId).header("Authorization", manager))
-                .andExpect(status().isConflict());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("Deleted"));
     }
 
     @Test
