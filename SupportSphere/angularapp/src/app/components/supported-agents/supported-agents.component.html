@@ -1,0 +1,103 @@
+<div class="page">
+  <div class="page-head"><div>
+    <h1 class="page-title">Support Agents</h1>
+    <p class="page-sub">The agents who’ve worked on your tickets.</p>
+  </div></div>
+
+  <section class="card">
+    <div class="toolbar">
+      <div class="search"><span class="ic i-search ic-14" aria-hidden="true"></span><label class="sr-only" for="aq-n">Search by name or expertise</label>
+        <input id="aq-n" class="input" type="search" placeholder="Search by name or expertise" [(ngModel)]="nameSearch"></div>
+      <span class="filter-note">{{ filteredAgents.length }} {{ filteredAgents.length === 1 ? 'agent' : 'agents' }}</span>
+    </div>
+
+    <div *ngIf="loading" class="agent-grid">
+      <div class="card agent-card" *ngFor="let x of [1,2,3]"><div class="ag-head"><div class="sk" style="width:48px;height:48px;border-radius:50%"></div><div class="grow"><div class="sk sk-l" style="width:60%;margin-bottom:8px"></div><div class="sk sk-l" style="width:40%"></div></div></div><div class="sk sk-l" style="margin:20px 0 10px"></div><div class="sk" style="height:48px"></div></div>
+    </div>
+
+    <div *ngIf="errorMessage" class="err-page" role="alert">
+      <div class="err-ic"><span class="ic i-wifi-off ic-28"></span></div>
+      <h1 class="err-t">Unable to load agents</h1><p class="err-d">{{ errorMessage }}</p>
+      <div class="err-actions"><button type="button" class="btn btn-pri" (click)="loadAgents()"><span class="ic i-refresh"></span>Retry</button></div>
+    </div>
+
+    <div *ngIf="!loading && !errorMessage && filteredAgents.length > 0" class="agent-grid">
+      <article class="card agent-card" *ngFor="let a of filteredAgents">
+        <div class="ag-head">
+          <span class="avatar av-lg" [style.background]="ui.avatar(a.name).bg" [style.color]="ui.avatar(a.name).fg">{{ ui.avatar(a.name).ini }}</span>
+          <div class="grow" style="min-width:0"><h3 class="ag-name trunc">{{ a.name }}</h3><div class="ag-exp">{{ a.expertise }} · {{ a.experience }}</div>
+            <div style="margin-top:6px"><span class="avail" [class.on]="a.status === 'Available'" [class.off]="a.status !== 'Available'">{{ a.status }}</span></div></div>
+          <span class="chip chip-pri">{{ ticketCount(a) }}</span>
+        </div>
+        <div class="ag-meta">
+          <div class="m"><span class="ic i-mail ic-14"></span><span>{{ a.email }}</span></div>
+          <div class="m"><span class="ic i-phone ic-14"></span><span>{{ a.phone }}</span></div>
+          <div class="m"><span class="ic i-clock ic-14"></span><span>{{ a.shiftTiming }}</span></div>
+          <div class="m"><span class="ic i-calendar ic-14"></span><span>Added {{ ui.formatDate(a.addedDate) }}</span></div>
+        </div>
+        <p class="ag-rem">{{ a.remarks }}</p>
+        <div class="ag-foot">
+          <button type="button" class="btn btn-pri btn-sm" (click)="openWorked(a)"><span class="ic i-ticket ic-14"></span>Tickets Worked</button>
+          <button type="button" class="btn btn-sec btn-sm" (click)="openProfile(a)">View profile</button>
+        </div>
+      </article>
+    </div>
+
+    <div *ngIf="!loading && !errorMessage && agents.length === 0" class="empty">
+      <div class="empty-art"><div class="tile"><span class="ic i-users ic-24"></span></div></div>
+      <h3 class="empty-t">No supported agents found for your tickets</h3>
+      <p class="empty-d">Once a manager assigns an agent to one of your tickets, they’ll appear here.</p>
+      <a class="btn btn-sec" routerLink="/client/tickets">View my tickets</a>
+    </div>
+    <div *ngIf="!loading && !errorMessage && agents.length > 0 && filteredAgents.length === 0" class="empty">
+      <div class="empty-art"><div class="tile"><span class="ic i-filter-x ic-24"></span></div></div>
+      <h3 class="empty-t">No results match your search</h3>
+      <p class="empty-d">No agents match that name or expertise.</p>
+      <button type="button" class="btn btn-sec" (click)="nameSearch = ''">Clear search</button>
+    </div>
+  </section>
+</div>
+
+<!-- Tickets worked -->
+<div *ngIf="workedAgent" class="overlay">
+  <button class="overlay-btn" type="button" tabindex="-1" aria-label="Close dialog" (click)="workedAgent = null"></button>
+  <div class="modal lg" role="dialog" aria-modal="true" aria-labelledby="mt-tw">
+    <div class="modal-h"><span class="avatar av-lg" [style.background]="ui.avatar(workedAgent.name).bg" [style.color]="ui.avatar(workedAgent.name).fg">{{ ui.avatar(workedAgent.name).ini }}</span>
+      <div class="grow"><h2 class="modal-t" id="mt-tw">Tickets worked</h2><p class="modal-s">{{ workedAgent.name }} · {{ workedAgent.expertise }}</p></div>
+      <button type="button" class="icon-btn sm" (click)="workedAgent = null" aria-label="Close"><span class="ic i-x"></span></button></div>
+    <div class="modal-b">
+      <div *ngIf="workedLoading" class="loading-row">Loading tickets…</div>
+      <div *ngIf="!workedLoading && workedTickets.length > 0" class="opt-list">
+        <div class="mini-t" *ngFor="let t of workedTickets; let i = index">
+          <div class="row" style="justify-content:space-between"><span class="tid"><span class="muted" style="font-weight:normal;margin-right:6px">{{ i + 1 }}.</span>#{{ t.ticketId }}</span><span class="badge" [ngClass]="ui.statusClass(t.status)"><span class="ic ic-12" [ngClass]="ui.statusIcon(t.status)"></span>{{ t.status }}</span></div>
+          <b>{{ t.title }}</b>
+          <div class="row" style="justify-content:space-between;flex-wrap:wrap">
+            <span class="muted" style="font-size:12.5px">{{ t.issueCategory }} · Opened {{ ui.shortDate(t.createdDate) }}</span>
+            <span class="row">
+              <a class="btn btn-ghost btn-sm" [routerLink]="['/client/tickets', t.ticketId]">Open</a>
+              <a *ngIf="canReview(t)" class="btn btn-pri btn-sm" routerLink="/client/feedback/add" [queryParams]="{ ticketId: t.ticketId }"><span class="ic i-star ic-14"></span>Write a Review</a>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!workedLoading && workedTickets.length === 0" class="res-empty"><span class="ic i-inbox ic-18"></span><div>No tickets found for this agent.</div></div>
+    </div>
+    <div class="modal-f"><button type="button" class="btn btn-sec" (click)="workedAgent = null">Close</button></div>
+  </div>
+</div>
+
+<!-- Agent profile -->
+<div *ngIf="profileAgent" class="overlay">
+  <button class="overlay-btn" type="button" tabindex="-1" aria-label="Close dialog" (click)="profileAgent = null"></button>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt-ag">
+    <div class="modal-h"><span class="avatar av-xl" [style.background]="ui.avatar(profileAgent.name).bg" [style.color]="ui.avatar(profileAgent.name).fg">{{ ui.avatar(profileAgent.name).ini }}</span>
+      <div class="grow" style="padding-top:6px"><h2 class="modal-t" id="mt-ag">{{ profileAgent.name }}</h2><p class="modal-s">{{ profileAgent.expertise }} · Agent #{{ profileAgent.agentId }}</p>
+        <span class="avail" [class.on]="profileAgent.status === 'Available'" [class.off]="profileAgent.status !== 'Available'" style="margin-top:6px">{{ profileAgent.status }}</span></div>
+      <button type="button" class="icon-btn sm" (click)="profileAgent = null" aria-label="Close"><span class="ic i-x"></span></button></div>
+    <div class="modal-b"><dl class="kv" style="margin:4px 0 0">
+      <dt>Email</dt><dd>{{ profileAgent.email }}</dd><dt>Phone</dt><dd>{{ profileAgent.phone }}</dd><dt>Experience</dt><dd>{{ profileAgent.experience }}</dd>
+      <dt>Shift timing</dt><dd>{{ profileAgent.shiftTiming }}</dd><dt>Added</dt><dd>{{ ui.formatDate(profileAgent.addedDate) }}</dd><dt>Remarks</dt><dd>{{ profileAgent.remarks }}</dd>
+    </dl></div>
+    <div class="modal-f"><button type="button" class="btn btn-sec" (click)="profileAgent = null">Close</button></div>
+  </div>
+</div>

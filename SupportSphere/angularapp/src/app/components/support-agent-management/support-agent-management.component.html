@@ -1,0 +1,174 @@
+<div class="page">
+  <a class="back" routerLink="/manager/agents"><span class="ic i-arrow-left ic-14"></span>Back</a>
+  <div class="page-head">
+    <div>
+      <h1 class="page-title">{{ editId ? 'Edit Support Agent' : 'Add New Support Agent' }}</h1>
+      <p class="page-sub">{{ editId ? 'Update this agent’s details and availability.' : 'Agents become assignable as
+        soon as they’re added.' }}</p>
+    </div>
+  </div>
+
+  <form #agentForm="ngForm" (ngSubmit)="onSubmit(agentForm)" novalidate>
+    <div class="form-layout">
+      <section class="card">
+        <div class="form-sec">
+          <h2 class="sec-t">Profile</h2>
+          <p class="sec-d">Contact details clients and managers will see.</p>
+          <div class="fgrid">
+            <div class="field full">
+              <label class="label" for="name">Name <span class="req" aria-hidden="true">*</span></label>
+              <input id="name" name="name" class="input" type="text" placeholder="Full name" [(ngModel)]="agent.name"
+                #name="ngModel" required pattern="^[A-Za-z][A-Za-z .'-]{2,}$"
+                [class.is-err]="name.invalid && (name.touched || submitted)">
+              <p class="field-err" *ngIf="name.errors?.['required'] && (name.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Name is required</p>
+              <p class="field-err" *ngIf="name.errors?.['pattern'] && (name.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Enter the agent’s full name (letters only)</p>
+            </div>
+            <div class="field">
+              <label class="label" for="email">Email <span class="req" aria-hidden="true">*</span></label>
+              <input id="email" name="email" class="input" type="email" placeholder="name@supportsphere.io"
+                [(ngModel)]="agent.email" #email="ngModel" required pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$"
+                [class.is-err]="email.invalid && (email.touched || submitted)">
+              <p class="field-err" *ngIf="email.errors?.['required'] && (email.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Email is required</p>
+              <p class="field-err" *ngIf="email.errors?.['pattern'] && (email.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Enter a valid email address</p>
+            </div>
+            <div class="field">
+              <label class="label" for="phone">Phone <span class="req" aria-hidden="true">*</span></label>
+              <input id="phone" name="phone" class="input" type="tel" inputmode="numeric" placeholder="10-digit number"
+                [(ngModel)]="agent.phone" #phone="ngModel" required pattern="^[6-9][0-9]{9}$"
+                [class.is-err]="phone.invalid && (phone.touched || submitted)">
+              <p class="field-err" *ngIf="phone.errors?.['required'] && (phone.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Phone is required</p>
+              <p class="field-err" *ngIf="phone.errors?.['pattern'] && (phone.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Enter a valid 10-digit phone number</p>
+            </div>
+            <div class="field full">
+              <span class="label">Profile / résumé <span class="hint" style="font-weight:400">(optional)</span></span>
+              <label class="drop" style="display:flex;align-items:center;padding:16px;border:1px dashed var(--bd);border-radius:8px;cursor:pointer">
+                <input id="profileUpload" class="sr-only" type="file" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+                  (change)="onFileSelected($event)">
+                <span class="kpi-ic k-pri" style="margin-right:12px"><span class="ic i-upload"></span></span>
+                <span style="flex:1"><b style="display:block;font-weight:500">{{ fileName || 'Upload profile or résumé' }}</b>
+                  <span class="hint">{{ fileName ? 'Stored as a base64 string in profile · click to replace' : 'PDF, DOC
+                    or image · stored as base64 in profile' }}</span></span>
+                <button type="button" class="icon-btn sm danger" *ngIf="fileName" (click)="clearFile($event)" aria-label="Remove selected PDF" title="Remove selected PDF" style="margin-left:auto;z-index:10;position:relative">
+                  <span class="ic i-x"></span>
+                </button>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-sec">
+          <h2 class="sec-t">Work details</h2>
+          <p class="sec-d">Expertise is matched against ticket categories when suggesting agents.</p>
+          <div class="fgrid">
+            <div class="field">
+              <label class="label" for="expertise">Expertise <span class="req" aria-hidden="true">*</span></label>
+              <select id="expertise" name="expertise" class="select" [(ngModel)]="agent.expertise" #expertise="ngModel"
+                required [class.is-err]="expertise.invalid && (expertise.touched || submitted)">
+                <option value="">Select expertise</option>
+                <option *ngFor="let e of expertiseOptions" [value]="e">{{ e }}</option>
+              </select>
+              <p class="field-err" *ngIf="expertise.invalid && (expertise.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Select an area of expertise</p>
+            </div>
+            <div class="field">
+              <label class="label" for="experience">Experience <span class="req" aria-hidden="true">*</span></label>
+              <input id="experience" name="experience" class="input" type="text" placeholder="e.g. 3 years"
+                [(ngModel)]="agent.experience" #experience="ngModel" required
+                pattern="^[0-9]+(\.[0-9]+)?\s*([Yy]ears?|[Yy]rs?|[Mm]onths?)$"
+                [class.is-err]="experience.invalid && (experience.touched || submitted)">
+              <p class="field-err" *ngIf="experience.errors?.['required'] && (experience.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Experience is required</p>
+              <p class="field-err" *ngIf="experience.errors?.['pattern'] && (experience.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Use a format like “3 years”</p>
+            </div>
+            <div class="field">
+              <label class="label" for="shiftTiming">Shift timing <span class="req" aria-hidden="true">*</span></label>
+              <select id="shiftTiming" name="shiftTiming" class="select" [(ngModel)]="agent.shiftTiming"
+                #shift="ngModel" required [class.is-err]="shift.invalid && (shift.touched || submitted)">
+                <option value="">Select a shift</option>
+                <option *ngFor="let s of shiftOptions" [value]="s">{{ s }}</option>
+              </select>
+              <p class="field-err" *ngIf="shift.invalid && (shift.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Select a shift</p>
+            </div>
+
+            <div class="field full">
+              <label class="label" for="remarks">Remarks <span class="req" aria-hidden="true">*</span></label>
+              <textarea id="remarks" name="remarks" class="textarea" style="min-height:96px"
+                placeholder="Strengths, languages, escalation notes…" [(ngModel)]="agent.remarks" #remarks="ngModel"
+                required minlength="5" [class.is-err]="remarks.invalid && (remarks.touched || submitted)"></textarea>
+              <p class="field-err" *ngIf="remarks.errors?.['required'] && (remarks.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Add a short remark</p>
+              <p class="field-err" *ngIf="remarks.errors?.['minlength'] && (remarks.touched || submitted)"><span
+                  class="ic i-alert-circle ic-14"></span>Remarks must be at least 5 characters</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-foot" style="flex-wrap:wrap">
+          <div *ngIf="submitted && agentForm.invalid" class="alert alert-err" role="alert"
+            style="margin-right:auto;padding:8px 12px"><span class="ic i-alert-circle"></span>
+            <div>Please fill in all required fields correctly.</div>
+          </div>
+          <div *ngIf="errorMessage" class="alert alert-err" role="alert" style="margin-right:auto;padding:8px 12px">
+            <span class="ic i-alert-circle"></span>
+            <div>{{ errorMessage }}</div>
+          </div>
+          <a class="btn btn-sec" routerLink="/manager/agents">Cancel</a>
+          <button type="submit" class="btn btn-pri" [disabled]="saving">{{ editId ? 'Update Agent' : 'Add Agent'
+            }}</button>
+        </div>
+      </section>
+
+      <!-- Live preview of the agent card -->
+      <aside class="card" aria-label="Live preview">
+        <div class="card-h">
+          <h2 class="card-t">Preview</h2><span class="hint">How the agent will look</span>
+        </div>
+        <div class="card-b">
+          <div class="card agent-card preview-card" style="box-shadow:none">
+            <div class="ag-head"><span class="avatar av-lg" [style.background]="ui.avatar(agent.name || 'New Agent').bg"
+                [style.color]="ui.avatar(agent.name || 'New Agent').fg">{{ ui.avatar(agent.name || 'New Agent').ini
+                }}</span>
+              <div class="grow" style="min-width:0">
+                <h3 class="ag-name trunc">{{ agent.name || 'Agent name' }}</h3>
+                <div class="ag-exp">{{ agent.expertise || 'Expertise' }} · {{ agent.experience || 'Experience' }}</div>
+                <div style="margin-top:6px"><span class="avail" [class.on]="agent.status === 'Available'"
+                    [class.off]="agent.status !== 'Available'">{{ agent.status }}</span></div>
+              </div>
+            </div>
+            <div class="ag-meta" style="grid-template-columns:minmax(0,1fr)">
+              <div class="m"><span class="ic i-mail ic-14"></span><span>{{ agent.email || 'email@supportsphere.io'
+                  }}</span></div>
+              <div class="m"><span class="ic i-phone ic-14"></span><span>{{ agent.phone || 'Phone' }}</span></div>
+              <div class="m"><span class="ic i-clock ic-14"></span><span>{{ agent.shiftTiming || 'Shift timing'
+                  }}</span></div>
+            </div>
+            <p class="ag-rem" style="margin:0">{{ agent.remarks || 'Remarks appear here.' }}</p>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </form>
+</div>
+
+<!-- Success popup (SRS) -->
+<div *ngIf="successMessage" class="overlay">
+  <div class="modal sm" role="alertdialog" aria-modal="true" aria-labelledby="mt-ok">
+    <div class="modal-h"><span class="m-ic ok"><span class="ic i-circle-check ic-20"></span></span>
+      <div>
+        <h2 class="modal-t" id="mt-ok">{{ successMessage }}</h2>
+        <p class="modal-s">{{ editId ? 'The agent’s details were saved.' : 'The agent can now be assigned to tickets.'
+          }}</p>
+      </div>
+    </div>
+    <div class="modal-b"></div>
+    <div class="modal-f"><button type="button" class="btn btn-pri" (click)="closeSuccess()">Ok</button></div>
+  </div>
+</div>

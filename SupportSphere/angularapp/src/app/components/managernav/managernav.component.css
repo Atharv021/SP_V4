@@ -1,0 +1,2 @@
+/* The sidebar and bottom bar are direct children of the .app flex layout */
+:host { display: contents; }

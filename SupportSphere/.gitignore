@@ -1,0 +1,279 @@
+# ==============================
+
+# Java / Spring Boot
+
+# ==============================
+ 
+# Compiled class files
+
+*.class
+ 
+# Build output
+
+target/
+
+build/
+
+out/
+ 
+# Maven
+
+.mvn/timing.properties
+ 
+# Spring Boot logs
+
+*.log
+
+logs/
+ 
+# ==============================
+
+ 
+# Eclipse / Spring Tool Suite
+
+.classpath
+
+.project
+
+.settings/
+
+.springBeans
+
+.sts4-cache/
+ 
+# VS Code
+
+.vscode/
+ 
+# ==============================
+
+# Java temporary files
+
+# ==============================
+ 
+*.jar
+
+*.war
+
+*.ear
+ 
+# ==============================
+
+# Angular / Node
+
+# ==============================
+ 
+# Node dependencies
+
+node_modules/
+ 
+# Angular build output
+
+dist/
+
+.angular/
+
+tmp/
+
+out-tsc/
+ 
+# Angular cache
+
+.cache/
+ 
+# npm logs
+
+npm-debug.log*
+
+yarn-debug.log*
+
+yarn-error.log*
+
+pnpm-debug.log*
+ 
+# Environment files
+
+.env
+
+.env.local
+
+.env.development
+
+.env.production
+ 
+# ==============================
+
+# OS generated files
+
+# ==============================
+ 
+# Windows
+
+Thumbs.db
+
+Thumbs.db:encryptable
+
+ehthumbs.db
+
+Desktop.ini
+ 
+# macOS
+
+.DS_Store
+ 
+# Linux
+
+*~
+ 
+# ==============================
+
+# Coverage
+
+# ==============================
+ 
+coverage/
+
+.nyc_output/
+ 
+# ==============================
+
+# Miscellaneous
+
+# ==============================
+ 
+*.tmp
+
+*.temp
+
+*.swp
+
+*.swo
+ 
+# ==============================
+# Java / Spring Boot
+# ==============================
+ 
+# Compiled class files
+*.class
+ 
+# Build output
+target/
+build/
+out/
+ 
+# Maven
+.mvn/timing.properties
+ 
+# Spring Boot logs
+*.log
+logs/
+ 
+# ==============================
+# IDE
+# ==============================
+ 
+# VS Code
+.vscode/
+ 
+# ==============================
+# Java temporary files
+# ==============================
+ 
+*.jar
+*.war
+*.ear
+ 
+# ==============================
+# Angular / Node
+# ==============================
+ 
+# Node dependencies
+node_modules/
+ 
+# Angular build output
+dist/
+.angular/
+tmp/
+out-tsc/
+
+/angularapp/package-lock.json
+ 
+# Angular cache
+.cache/
+ 
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+ 
+# Environment files
+.env
+.env.local
+.env.development
+.env.production
+ 
+# ==============================
+# OS generated files
+# ==============================
+ 
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+ 
+# ==============================
+# Coverage
+# ==============================
+ 
+coverage/
+.nyc_output/
+ 
+# ==============================
+# Miscellaneous
+# ==============================
+ 
+*.tmp
+*.temp
+*.swp
+*.swo
+
+
+
+# ==============================
+# Spec
+# ==============================
+
+
+angularapp/src/app/components/authguard/authguard.component.spec.ts
+angularapp/src/app/components/client-view-tickets/client-view-tickets.component.spec.ts
+angularapp/src/app/components/clientnav/clientnav.component.spec.ts
+angularapp/src/app/components/clientpostfeedback/clientpostfeedback.component.spec.ts
+angularapp/src/app/components/clientviewfeedback/clientviewfeedback.component.spec.ts
+angularapp/src/app/components/confirm-dialog/confirm-dialog.component.spec.ts
+angularapp/src/app/components/error/error.component.spec.ts
+angularapp/src/app/components/home-page/home-page.component.spec.ts
+angularapp/src/app/components/login/login.component.spec.ts
+angularapp/src/app/components/manager-dashboard/manager-dashboard.component.spec.ts
+angularapp/src/app/components/manager-view-agents/manager-view-agents.component.spec.ts
+angularapp/src/app/components/manager-view-tickets/manager-view-tickets.component.spec.ts
+angularapp/src/app/components/managernav/managernav.component.spec.ts
+angularapp/src/app/components/managerviewfeedback/managerviewfeedback.component.spec.ts
+angularapp/src/app/components/message-dialog/message-dialog.component.spec.ts
+angularapp/src/app/components/signup/signup.component.spec.ts
+angularapp/src/app/components/support-agent-management/support-agent-management.component.spec.ts
+angularapp/src/app/components/supported-agents/supported-agents.component.spec.ts
+angularapp/src/app/components/ticket-details/ticket-details.component.spec.ts
+angularapp/src/app/components/ticket-management/ticket-management.component.spec.ts
+angularapp/src/app/components/toast/toast.component.spec.ts
+angularapp/src/app/models/feedback.model.spec.ts
+angularapp/src/app/models/login.model.spec.ts
+angularapp/src/app/models/support-agent.model.spec.ts
+angularapp/src/app/models/ticket.model.spec.ts
+angularapp/src/app/models/user.model.spec.ts
+angularapp/src/app/services/auth.service.spec.ts
+angularapp/src/app/services/feedback.service.spec.ts
+angularapp/src/app/services/feedback.service.spec.ts
+angularapp/src/app/services/support-agent.service.spec.ts
+angularapp/src/app/services/ticket.service.spec.ts
